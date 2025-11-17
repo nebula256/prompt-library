@@ -58,7 +58,7 @@
 
         <!-- بخش جدول پرامپت‌ها -->
         <div class="overflow-x-auto bg-white rounded-lg shadow">
-            <table class="w-full min-w-max text-sm text-right text-gray-700">
+            <table class="w-full table-fixed text-sm text-right text-gray-700"> <!-- <--- تغییر در این خط: min-w-max حذف شد و table-fixed اضافه شد -->
                 <!-- هدر جدول -->
                 <thead class="bg-gray-800 text-white text-base">
                     <tr>
@@ -239,13 +239,13 @@
             }
 
             row.innerHTML = `
-                <td class="px-6 py-4 whitespace-pre-wrap">${escapeHTML(data.text)}</td>
-                <td class="px-6 py-4">${escapeHTML(data.occasion)}</td>
-                <td class="px-6 py-4">${escapeHTML(data.keywords)}</td>
-                <td class="px-6 py-4">${escapeHTML(data.negative)}</td>
-                <td class="px-6 py-4">${escapeHTML(data.variables)}</td>
+                <td class="px-6 py-4 whitespace-normal break-words">${escapeHTML(data.text)}</td>
+                <td class="px-6 py-4 whitespace-normal break-words">${escapeHTML(data.occasion)}</td>
+                <td class="px-6 py-4 whitespace-normal break-words">${escapeHTML(data.keywords)}</td>
+                <td class="px-6 py-4 whitespace-normal break-words">${escapeHTML(data.negative)}</td>
+                <td class="px-6 py-4 whitespace-normal break-words">${escapeHTML(data.variables)}</td>
                 <td class="px-6 py-4">${data.link ? `<a href="${escapeHTML(data.link)}" class="text-blue-600 hover:underline" target="_blank">[لینک نمونه]</a>` : ''}</td>
-                <td class="px-6 py-4">${escapeHTML(data.notes)}</td>
+                <td class="px-6 py-4 whitespace-normal break-words">${escapeHTML(data.notes)}</td>
                 <td class="px-6 py-4 text-center whitespace-nowrap">
                     <button class="action-btn edit-btn" data-id="${docSnapshot.id}" title="ویرایش پرامپت">✏️</button>
                     <button class="action-btn delete-btn" data-id="${docSnapshot.id}" title="حذف پرامپت">🗑️</button>
