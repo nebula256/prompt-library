@@ -30,6 +30,29 @@
         .edit-btn:hover {
             color: #1d4ed8; /* blue-700 */
         }
+        /* استایل برای دکمه کپی */
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem; /* 8px */
+            left: 0.5rem; /* 8px */
+            padding: 0.25rem; /* 4px */
+            background-color: white;
+            border: 1px solid #e2e8f0; /* gray-200 */
+            border-radius: 0.25rem; /* 4px */
+            color: #6b7280; /* gray-500 */
+            cursor: pointer;
+            opacity: 0; /* مخفی بودن به صورت پیش‌فرض */
+            transition: opacity 0.2s;
+            font-size: 0.8rem; /* کوچک‌تر کردن آیکون/متن */
+        }
+        /* نمایش دکمه کپی هنگام هاور روی ردیف */
+        tr:hover .copy-btn {
+            opacity: 1;
+        }
+        .copy-btn:hover {
+            color: #3b82f6; /* blue-500 */
+            background-color: #f9fafb; /* gray-50 */
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-900">
@@ -58,25 +81,26 @@
 
         <!-- بخش جدول پرامپت‌ها -->
         <div class="overflow-x-auto bg-white rounded-lg shadow">
-            <table class="w-full table-fixed text-sm text-right text-gray-700"> <!-- <--- تغییر در این خط: min-w-max حذف شد و table-fixed اضافه شد -->
+            <!-- <--- تغییر در این خط: min-w-max حذف شد و table-fixed اضافه شد -->
+            <table class="w-full text-sm text-right text-gray-700 border-collapse border border-gray-300">
                 <!-- هدر جدول -->
                 <thead class="bg-gray-800 text-white text-base">
                     <tr>
-                        <th class="px-6 py-4">💡 متن پرامپت</th>
-                        <th class="px-6 py-4">🏷️ موضوع / مناسبت</th>
-                        <th class="px-6 py-4">🔑 کلمات کلیدی</th>
-                        <th class="px-6 py-4">⛔ پرامپت منفی</th>
-                        <th class="px-6 py-4">⚙️ متغیرها</th>
-                        <th class="px-6 py-4">🖼️ نمونه بصری</th>
-                        <th class="px-6 py-4">✍️ یادداشت‌ها</th>
-                        <th class="px-6 py-4">اقدامات</th>
+                        <th class="px-6 py-4 border border-gray-300">💡 متن پرامپت</th>
+                        <th class="px-6 py-4 border border-gray-300">🏷️ موضوع / مناسبت</th>
+                        <th class="px-6 py-4 border border-gray-300">🔑 کلمات کلیدی</th>
+                        <th class="px-6 py-4 border border-gray-300">⛔ پرامپت منفی</th>
+                        <!-- ستون متغیرها حذف شد -->
+                        <th class="px-6 py-4 border border-gray-300">🖼️ نمونه بصری</th>
+                        <th class="px-6 py-4 border border-gray-300">✍️ یادداشت‌ها</th>
+                        <th class="px-6 py-4 border border-gray-300">اقدامات</th>
                     </tr>
                 </thead>
                 <!-- بدنه جدول که پرامپت‌ها در آن قرار می‌گیرند -->
                 <!-- این بخش اکنون توسط فایربیس پر می‌شود -->
-                <tbody id="promptTableBody" class="divide-y divide-gray-200">
+                <tbody id="promptTableBody">
                     <tr id="loadingRow">
-                        <td colspan="8" class="px-6 py-10 text-center text-gray-500 text-lg">
+                        <td colspan="7" class="px-6 py-10 text-center text-gray-500 text-lg border border-gray-300">
                              در حال بارگذاری داده‌ها از فایربیس...
                         </td>
                     </tr>
@@ -119,11 +143,8 @@
                         <input type="text" id="promptNegative" name="promptNegative" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label for="promptVariables" class="block text-sm font-medium text-gray-700 mb-1">⚙️ متغیرها</label>
-                        <input type="text" id="promptVariables" name="promptVariables" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
+                <!-- بخش متغیرها حذف شد و لینک تمام‌صفحه شد -->
+                <div class="grid grid-cols-1 gap-4">
                     <div>
                         <label for="promptLink" class="block text-sm font-medium text-gray-700 mb-1">🖼️ لینک نمونه بصری</label>
                         <input type="url" id="promptLink" name="promptLink" placeholder="https://example.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ltr text-left">
@@ -162,7 +183,7 @@
         // !!!!!!! توجه بسیار مهم !!!!!!!
         // شما باید آبجکت `firebaseConfig` را که از کنسول فایربیس کپی کردید،
         // در اینجا جایگزین کنید.
-        const firebaseConfig = {
+         const firebaseConfig = {
     apiKey: "AIzaSyCw3CvUnumkNgK2-uhZ1paUPetfBc-hOYs",
     authDomain: "my-prompt-library-35534.firebaseapp.com",
     projectId: "my-prompt-library-35534",
@@ -196,6 +217,19 @@
         const searchInput = document.getElementById('searchInput');
         const modalTitle = document.getElementById('modalTitle');
         const saveButton = document.getElementById('saveButton');
+
+        // --- تابع کمکی برای کپی متن ---
+        async function copyToClipboard(text, btn) {
+            try {
+                await navigator.clipboard.writeText(text);
+                btn.textContent = 'کپی شد!';
+                setTimeout(() => { btn.textContent = '📋'; }, 1500);
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+                btn.textContent = 'خطا!';
+                setTimeout(() => { btn.textContent = '📋'; }, 1500);
+            }
+        }
 
         // تابع باز کردن مودال
         const showModal = () => modal.classList.remove('hidden');
@@ -231,22 +265,20 @@
             row.id = docSnapshot.id; // استفاده از نام جدید
             row.className = 'hover:bg-gray-50 transition duration-150';
 
-            // رنگ‌بندی یکی در میان
-            if (tableBody.rows.length % 2 === 0) {
-                 row.classList.add('bg-gray-50', 'hover:bg-gray-100');
-            } else {
-                 row.classList.add('bg-white', 'hover:bg-gray-50');
-            }
-
+            // رنگ‌بندی یکی در میان (حذف شد چون خطوط کامل داریم)
+            // if (tableBody.rows.length % 2 === 0) { ... }
+            
             row.innerHTML = `
-                <td class="px-6 py-4 whitespace-normal break-words">${escapeHTML(data.text)}</td>
-                <td class="px-6 py-4 whitespace-normal break-words">${escapeHTML(data.occasion)}</td>
-                <td class="px-6 py-4 whitespace-normal break-words">${escapeHTML(data.keywords)}</td>
-                <td class="px-6 py-4 whitespace-normal break-words">${escapeHTML(data.negative)}</td>
-                <td class="px-6 py-4 whitespace-normal break-words">${escapeHTML(data.variables)}</td>
-                <td class="px-6 py-4">${data.link ? `<a href="${escapeHTML(data.link)}" class="text-blue-600 hover:underline" target="_blank">[لینک نمونه]</a>` : ''}</td>
-                <td class="px-6 py-4 whitespace-normal break-words">${escapeHTML(data.notes)}</td>
-                <td class="px-6 py-4 text-center whitespace-nowrap">
+                <td class="px-6 py-4 whitespace-normal break-words border border-gray-300 relative">
+                    <span class="prompt-text">${escapeHTML(data.text)}</span>
+                    <button class="copy-btn" title="کپی کردن متن پرامپت">📋</button>
+                </td>
+                <td class="px-6 py-4 whitespace-normal break-words border border-gray-300">${escapeHTML(data.occasion)}</td>
+                <td class="px-6 py-4 whitespace-normal break-words border border-gray-300">${escapeHTML(data.keywords)}</td>
+                <td class="px-6 py-4 whitespace-normal break-words border border-gray-300">${escapeHTML(data.negative)}</td>
+                <td class="px-6 py-4 border border-gray-300">${data.link ? `<a href="${escapeHTML(data.link)}" class="text-blue-600 hover:underline" target="_blank">[لینک نمونه]</a>` : ''}</td>
+                <td class="px-6 py-4 whitespace-normal break-words border border-gray-300">${escapeHTML(data.notes)}</td>
+                <td class="px-6 py-4 text-center whitespace-nowrap border border-gray-300">
                     <button class="action-btn edit-btn" data-id="${docSnapshot.id}" title="ویرایش پرامپت">✏️</button>
                     <button class="action-btn delete-btn" data-id="${docSnapshot.id}" title="حذف پرامپت">🗑️</button>
                 </td>
@@ -282,12 +314,19 @@
                     document.getElementById('promptOccasion').value = promptToEdit.data.occasion || '';
                     document.getElementById('promptKeywords').value = promptToEdit.data.keywords || '';
                     document.getElementById('promptNegative').value = promptToEdit.data.negative || '';
-                    document.getElementById('promptVariables').value = promptToEdit.data.variables || '';
+                    // فیلد متغیرها حذف شد
                     document.getElementById('promptLink').value = promptToEdit.data.link || '';
                     document.getElementById('promptNotes').value = promptToEdit.data.notes || '';
 
                     showModal();
                 }
+            });
+
+            // --- افزودن ایونت لیسنر برای دکمه کپی ---
+            row.querySelector('.copy-btn').addEventListener('click', (e) => {
+                const btn = e.currentTarget;
+                const textToCopy = btn.closest('td').querySelector('.prompt-text').textContent;
+                copyToClipboard(textToCopy, btn);
             });
         }
 
@@ -300,7 +339,7 @@
                 occasion: document.getElementById('promptOccasion').value,
                 keywords: document.getElementById('promptKeywords').value,
                 negative: document.getElementById('promptNegative').value,
-                variables: document.getElementById('promptVariables').value,
+                // فیلد متغیرها حذف شد
                 link: document.getElementById('promptLink').value,
                 notes: document.getElementById('promptNotes').value,
                 ownerId: userId // ذخیره آیدی کاربر
@@ -370,7 +409,7 @@
                     tableBody.innerHTML = ''; 
                     
                     if (querySnapshot.empty) {
-                        tableBody.innerHTML = `<tr id="emptyRow"><td colspan="8" class="px-6 py-10 text-center text-gray-500 text-lg">هنوز هیچ پرامپتی اضافه نشده است. اولین نفر باشید!</td></tr>`;
+                        tableBody.innerHTML = `<tr id="emptyRow"><td colspan="7" class="px-6 py-10 text-center text-gray-500 text-lg border border-gray-300">هنوز هیچ پرامپتی اضافه نشده است. اولین نفر باشید!</td></tr>`;
                         allPrompts = []; // خالی کردن حافظه محلی
                         return;
                     }
@@ -398,12 +437,13 @@
                     filterTable();
                 }, (error) => {
                     console.error("Error listening to collection: ", error);
-                    tableBody.innerHTML = `<tr id="errorRow"><td colspan="8" class="px-6 py-10 text-center text-red-500 text-lg">خطا در بارگذاری داده‌ها. لطفاً صفحه را رفرش کنید.</td></tr>`;
+                    tableBody.innerHTML = `<tr id="errorRow"><td colspan="7" class="px-6 py-10 text-center text-red-500 text-lg border border-gray-300">خطا در بارگذاری داده‌ها. لطفاً صفحه را رفرش کنید.</td></tr>`;
                 });
 
             } catch (error) {
+            } catch (error) {
                 console.error("Error during auth or initialization: ", error);
-                tableBody.innerHTML = `<tr id="authErrorRow"><td colspan="8" class="px-6 py-10 text-center text-red-500 text-lg">خطا در احراز هویت. ${error.message}</td></tr>`;
+                tableBody.innerHTML = `<tr id="authErrorRow"><td colspan="7" class="px-6 py-10 text-center text-red-500 text-lg border border-gray-300">خطا در احراز هویت. ${error.message}</td></tr>`;
             }
         }
 
