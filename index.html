@@ -184,13 +184,13 @@
         // شما باید آبجکت `firebaseConfig` را که از کنسول فایربیس کپی کردید،
         // در اینجا جایگزین کنید.
          const firebaseConfig = {
-    apiKey: "AIzaSyCw3CvUnumkNgK2-uhZ1paUPetfBc-hOYs",
-    authDomain: "my-prompt-library-35534.firebaseapp.com",
-    projectId: "my-prompt-library-35534",
-    storageBucket: "my-prompt-library-35534.firebasestorage.app",
-    messagingSenderId: "374041398410",
-    appId: "1:374041398410:web:8e0552f30229d8107cf173"
-  };
+     apiKey: "AIzaSyCw3CvUnumkNgK2-uhZ1paUPetfBc-hOYs",
+     authDomain: "my-prompt-library-35534.firebaseapp.com",
+     projectId: "my-prompt-library-35534",
+     storageBucket: "my-prompt-library-35534.firebasestorage.app",
+     messagingSenderId: "374041398410",
+     appId: "1:374041398410:web:8e0552f30229d8107cf173"
+   };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
@@ -440,8 +440,8 @@
                     tableBody.innerHTML = `<tr id="errorRow"><td colspan="7" class="px-6 py-10 text-center text-red-500 text-lg border border-gray-300">خطا در بارگذاری داده‌ها. لطفاً صفحه را رفرش کنید.</td></tr>`;
                 });
 
-            } catch (error) {
-            } catch (error) {
+            // } catch (error) { // <--- این بلوک 'catch' اضافی و خالی حذف می‌شود
+            } catch (error) { // <--- این 'catch' باقی می‌ماند
                 console.error("Error during auth or initialization: ", error);
                 tableBody.innerHTML = `<tr id="authErrorRow"><td colspan="7" class="px-6 py-10 text-center text-red-500 text-lg border border-gray-300">خطا در احراز هویت. ${error.message}</td></tr>`;
             }
