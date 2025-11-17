@@ -8,18 +8,27 @@
     <style>
         body { font-family: Tahoma, sans-serif; }
         .hidden { display: none; }
-        /* استایل ساده برای دکمه حذف */
-        .delete-btn {
+        /* استایل ساده برای دکمه‌های اقدام */
+        .action-btn {
             background: none;
             border: none;
             cursor: pointer;
             font-size: 1.25rem; /* 20px */
             line-height: 1;
             padding: 0.25rem;
+            margin: 0 0.125rem; /* کمی فاصله بین دکمه‌ها */
+        }
+        .delete-btn {
             color: #ef4444; /* red-500 */
         }
         .delete-btn:hover {
             color: #b91c1c; /* red-700 */
+        }
+        .edit-btn {
+            color: #3b82f6; /* blue-500 */
+        }
+        .edit-btn:hover {
+            color: #1d4ed8; /* blue-700 */
         }
     </style>
 </head>
@@ -76,11 +85,11 @@
         </div>
     </main>
 
-    <!-- مودال (پاپ‌آپ) برای افزودن پرامپت جدید -->
+    <!-- مودال (پاپ‌آپ) برای افزودن/ویرایش پرامپت -->
     <div id="addModal" class="hidden fixed inset-0 bg-black bg-opacity-60 overflow-y-auto h-full w-full flex items-center justify-center z-50 p-4">
         <div class="bg-white p-6 sm:p-8 rounded-lg shadow-xl w-full max-w-3xl max-h-full overflow-y-auto">
             <div class="flex justify-between items-center border-b pb-3 mb-5">
-                <h2 class="text-2xl font-semibold">افزودن پرامپت جدید</h2>
+                <h2 id="modalTitle" class="text-2xl font-semibold">افزودن پرامپت جدید</h2>
                 <button id="closeModalButton" class="text-gray-500 hover:text-gray-800 text-3xl font-bold">&times;</button>
             </div>
             
@@ -124,8 +133,8 @@
                     <button type="button" id="cancelButton" class="bg-gray-200 text-gray-800 px-5 py-2 rounded-lg font-medium hover:bg-gray-300 transition duration-300">
                         انصراف
                     </button>
-                    <button type="submit" class="bg-blue-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-blue-700 transition duration-300">
-                        ذخیره پرامپت
+                    <button type="submit" id="saveButton" class="bg-blue-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-blue-700 transition duration-300">
+                        ذخیره
                     </button>
                 </div>
             </form>
@@ -142,6 +151,7 @@
             doc, 
             addDoc, 
             deleteDoc, 
+            updateDoc, // <--- اضافه کردن updateDoc
             collection, 
             onSnapshot,
             setLogLevel
@@ -173,6 +183,8 @@
         const promptsCollection = collection(db, promptsCollectionPath);
 
         let userId = null;
+        let currentEditId = null; // <--- متغیر برای مدیریت حالت ویرایش
+        let allPrompts = []; // <--- حافظه محلی برای داده‌ها جهت ویرایش
 
         // --- 2. مدیریت UI (عناصر DOM) ---
         const addPromptButton = document.getElementById('addPromptButton');
@@ -182,11 +194,30 @@
         const addPromptForm = document.getElementById('addPromptForm');
         const tableBody = document.getElementById('promptTableBody');
         const searchInput = document.getElementById('searchInput');
+        const modalTitle = document.getElementById('modalTitle');
+        const saveButton = document.getElementById('saveButton');
 
+        // تابع باز کردن مودال
         const showModal = () => modal.classList.remove('hidden');
-        const hideModal = () => modal.classList.add('hidden');
+        
+        // تابع بستن و ریست کردن مودال
+        const hideModal = () => {
+            modal.classList.add('hidden');
+            addPromptForm.reset();
+            currentEditId = null;
+            modalTitle.textContent = "افزودن پرامپت جدید";
+            saveButton.textContent = "ذخیره";
+        };
 
-        addPromptButton.addEventListener('click', showModal);
+        // ایونت لیسنرهای مودال
+        addPromptButton.addEventListener('click', () => {
+            // اطمینان از ریست بودن مودال برای حالت "افزودن"
+            hideModal(); // اول ریست کن
+            currentEditId = null; // صراحتاً حالت افزودن را تنظیم کن
+            modalTitle.textContent = "افزودن پرامپت جدید";
+            saveButton.textContent = "ذخیره";
+            showModal(); // حالا نشان بده
+        });
         closeModalButton.addEventListener('click', hideModal);
         cancelButton.addEventListener('click', hideModal);
         modal.addEventListener('click', (e) => {
@@ -194,10 +225,10 @@
         });
 
         // --- 3. تابع کمکی برای رندر کردن ردیف جدول ---
-        function renderPromptRow(docSnapshot) { // <--- تغییر نام پارامتر از doc به docSnapshot
-            const data = docSnapshot.data(); // <--- استفاده از نام جدید
+        function renderPromptRow(docSnapshot) { // نام پارامتر از doc به docSnapshot تغییر کرد
+            const data = docSnapshot.data(); // استفاده از نام جدید
             const row = tableBody.insertRow(-1); // اضافه کردن به انتهای جدول
-            row.id = docSnapshot.id; // <--- استفاده از نام جدید
+            row.id = docSnapshot.id; // استفاده از نام جدید
             row.className = 'hover:bg-gray-50 transition duration-150';
 
             // رنگ‌بندی یکی در میان
@@ -215,26 +246,52 @@
                 <td class="px-6 py-4">${escapeHTML(data.variables)}</td>
                 <td class="px-6 py-4">${data.link ? `<a href="${escapeHTML(data.link)}" class="text-blue-600 hover:underline" target="_blank">[لینک نمونه]</a>` : ''}</td>
                 <td class="px-6 py-4">${escapeHTML(data.notes)}</td>
-                <td class="px-6 py-4 text-center">
-                    <button class="delete-btn" data-id="${docSnapshot.id}" title="حذف پرامپت">🗑️</button> <!-- <--- استفاده از نام جدید -->
+                <td class="px-6 py-4 text-center whitespace-nowrap">
+                    <button class="action-btn edit-btn" data-id="${docSnapshot.id}" title="ویرایش پرامپت">✏️</button>
+                    <button class="action-btn delete-btn" data-id="${docSnapshot.id}" title="حذف پرامپت">🗑️</button>
                 </td>
             `;
 
             // افزودن ایونت لیسنر برای دکمه حذف
             row.querySelector('.delete-btn').addEventListener('click', async (e) => {
-                const id = e.currentTarget.dataset.id; // <-- تغییر در این خط: e.target به e.currentTarget تبدیل شد
-                // در اینجا می‌توان یک مودال تایید زیبا نمایش داد
-                // اما برای سادگی، مستقیماً حذف می‌کنیم.
-                try {
-                    await deleteDoc(doc(db, promptsCollectionPath, id)); // <--- حالا doc در اینجا به درستی به تابع فایربیس اشاره می‌کند
-                    // ردیف به صورت خودکار توسط onSnapshot حذف می‌شود
-                } catch (error) {
-                    console.error("Error deleting document: ", error);
+                const id = e.currentTarget.dataset.id; // e.target به e.currentTarget تبدیل شد
+                
+                // یک تایید ساده قبل از حذف
+                if (confirm('آیا از حذف این پرامپت مطمئن هستید؟')) {
+                    try {
+                        await deleteDoc(doc(db, promptsCollectionPath, id)); // حالا doc به درستی به تابع فایربیس اشاره می‌کند
+                    } catch (error) {
+                        console.error("Error deleting document: ", error);
+                    }
+                }
+            });
+
+            // --- افزودن ایونت لیسنر برای دکمه ویرایش ---
+            row.querySelector('.edit-btn').addEventListener('click', (e) => {
+                const id = e.currentTarget.dataset.id;
+                const promptToEdit = allPrompts.find(p => p.id === id);
+
+                if (promptToEdit) {
+                    // تنظیم حالت ویرایش
+                    currentEditId = id;
+                    modalTitle.textContent = "ویرایش پرامپت";
+                    saveButton.textContent = "ذخیره تغییرات";
+
+                    // پر کردن فرم با داده‌های موجود
+                    document.getElementById('promptText').value = promptToEdit.data.text || '';
+                    document.getElementById('promptOccasion').value = promptToEdit.data.occasion || '';
+                    document.getElementById('promptKeywords').value = promptToEdit.data.keywords || '';
+                    document.getElementById('promptNegative').value = promptToEdit.data.negative || '';
+                    document.getElementById('promptVariables').value = promptToEdit.data.variables || '';
+                    document.getElementById('promptLink').value = promptToEdit.data.link || '';
+                    document.getElementById('promptNotes').value = promptToEdit.data.notes || '';
+
+                    showModal();
                 }
             });
         }
 
-        // --- 4. مدیریت فرم (افزودن داده به فایربیس) ---
+        // --- 4. مدیریت فرم (افزودن و ویرایش داده) ---
         addPromptForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -246,17 +303,30 @@
                 variables: document.getElementById('promptVariables').value,
                 link: document.getElementById('promptLink').value,
                 notes: document.getElementById('promptNotes').value,
-                createdAt: new Date(), // اضافه کردن تاریخ برای مرتب‌سازی
                 ownerId: userId // ذخیره آیدی کاربر
             };
 
             try {
-                await addDoc(promptsCollection, formData);
-                // ردیف به صورت خودکار توسط onSnapshot اضافه می‌شود
+                if (currentEditId) {
+                    // --- حالت ویرایش ---
+                    const docRef = doc(db, promptsCollectionPath, currentEditId);
+                    await updateDoc(docRef, {
+                        ...formData,
+                        updatedAt: new Date() // اضافه کردن تاریخ به‌روزرسانی
+                    });
+                } else {
+                    // --- حالت افزودن ---
+                    await addDoc(promptsCollection, {
+                        ...formData,
+                        createdAt: new Date() // اضافه کردن تاریخ ایجاد
+                    });
+                }
+                
+                // ردیف به صورت خودکار توسط onSnapshot به‌روز می‌شود
                 hideModal();
-                addPromptForm.reset();
+                
             } catch (error) {
-                console.error("Error adding document: ", error);
+                console.error("Error saving document: ", error);
             }
         });
 
@@ -301,13 +371,29 @@
                     
                     if (querySnapshot.empty) {
                         tableBody.innerHTML = `<tr id="emptyRow"><td colspan="8" class="px-6 py-10 text-center text-gray-500 text-lg">هنوز هیچ پرامپتی اضافه نشده است. اولین نفر باشید!</td></tr>`;
+                        allPrompts = []; // خالی کردن حافظه محلی
                         return;
                     }
 
                     // مرتب‌سازی بر اساس تاریخ ایجاد (جدیدترین اول)
-                    const docs = querySnapshot.docs.sort((a, b) => b.data().createdAt.toMillis() - a.data().createdAt.toMillis());
+                    // (توجه: createdAt ممکن است در اسناد ویرایش شده وجود نداشته باشد، باید منطق مرتب‌سازی را بهتر کنیم)
+                    const docs = querySnapshot.docs
+                        .map(doc => ({ id: doc.id, data: doc.data() })) // ذخیره داده‌ها در حافظه محلی
+                        .sort((a, b) => {
+                            const timeA = a.data.createdAt?.toMillis() || 0;
+                            const timeB = b.data.createdAt?.toMillis() || 0;
+                            return timeB - timeA; // جدیدترین اول
+                        });
+                    
+                    allPrompts = docs; // به‌روزرسانی حافظه محلی
 
-                    docs.forEach(renderPromptRow);
+                    docs.forEach(docSnapshot => {
+                        // بازسازی یک آبجکت شبیه به docSnapshot برای تابع رندر
+                        renderPromptRow({
+                            id: docSnapshot.id,
+                            data: () => docSnapshot.data
+                        });
+                    });
                     
                     filterTable();
                 }, (error) => {
