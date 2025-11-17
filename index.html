@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>کتابخانه پرامپت</title>
+    <!-- استفاده از Tailwind CSS برای طراحی جذاب -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* استفاده از یک فونت پیش‌فرض مناسب فارسی که در اکثر سیستم‌ها وجود دارد */
+        body {
+            font-family: Tahoma, sans-serif;
+        }
+        /* کلاس کمکی برای مخفی کردن */
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900">
+
+    <!-- هدر صفحه -->
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-6">
+                <h1 class="text-3xl font-bold text-gray-800">🚀 کتابخانه پرامپت شرکت</h1>
+                <button id="addPromptButton" class="bg-blue-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-blue-700 transition duration-300">
+                    + افزودن پرامپت جدید
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- بخش اصلی محتوا -->
+    <main class="container mx-auto p-4 sm:p-6 lg:p-8">
+        
+        <!-- نوار ابزار (جستجو) -->
+        <div class="bg-white p-4 rounded-lg shadow-sm mb-6">
+            <input type="text" id="searchInput" placeholder=" جستجو در پرامپت‌ها (بر اساس هر ستون)..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <!-- بخش جدول پرامپت‌ها -->
+        <!-- این کانتینر برای اسکرول افقی جدول در موبایل ضروری است -->
+        <div class="overflow-x-auto bg-white rounded-lg shadow">
+            <table class="w-full min-w-max text-sm text-right text-gray-700">
+                <!-- هدر جدول -->
+                <thead class="bg-gray-800 text-white text-base">
+                    <tr>
+                        <th class="px-6 py-4">💡 متن پرامپت</th>
+                        <th class="px-6 py-4">🏷️ موضوع / مناسبت</th>
+                        <th class="px-6 py-4">🔑 کلمات کلیدی</th>
+                        <th class="px-6 py-4">⛔ پرامپت منفی</th>
+                        <th class="px-6 py-4">⚙️ متغیرها</th>
+                        <th class="px-6 py-4">🖼️ نمونه بصری</th>
+                        <th class="px-6 py-4">✍️ یادداشت‌ها</th>
+                    </tr>
+                </thead>
+                <!-- بدنه جدول که پرامپت‌ها در آن قرار می‌گیرند -->
+                <tbody id="promptTableBody" class="divide-y divide-gray-200">
+                    <!-- ردیف نمونه 1 -->
+                    <tr class="hover:bg-gray-50 transition duration-150">
+                        <td class="px-6 py-4 whitespace-pre-wrap">استوری اینستاگرام مینیمال و شیک برای فروش فوق‌العاده. استفاده از رنگ‌های برند (سرمه‌ای، طلایی). نمایش تایمر شمارش معکوس.</td>
+                        <td class="px-6 py-4">فروش فوق‌العاده</td>
+                        <td class="px-6 py-4">استوری، مینیمال، تایمر، طلایی</td>
+                        <td class="px-6 py-4">شلوغ، رنگارنگ، فونت‌های فانتزی</td>
+                        <td class="px-6 py-4">[درصد تخفیف]، [زمان باقی‌مانده]</td>
+                        <td class="px-6 py-4"><a href="#" class="text-blue-600 hover:underline" target="_blank">[لینک نمونه]</a></td>
+                        <td class="px-6 py-4">برای کمپین‌های ۲۴ ساعته عالی جواب داد.</td>
+                    </tr>
+                    <!-- ردیف نمونه 2 -->
+                    <tr class="bg-gray-50 hover:bg-gray-100 transition duration-150">
+                        <td class="px-6 py-4 whitespace-pre-wrap">پوستر شاد و پرانرژی برای جشن نوروز. شامل المان‌های سنتی نوروز (سبزه، ماهی) در سبک طراحی مدرن و فلت.</td>
+                        <td class="px-6 py-4">جشن نوروز</td>
+                        <td class="px-6 py-4">پوستر، نوروز، مدرن، شاد، سبزه</td>
+                        <td class="px-6 py-4">تیره، غمگین، بیش از حد سنتی</td>
+                        <td class="px-6 py-4">[محل برگزاری]، [لوگو شرکت]</td>
+                        <td class="px-6 py-4"><a href="#" class="text-blue-600 hover:underline" target="_blank">[لینک نمونه]</a></td>
+                        <td class="px-6 py-4">سبک فلت بازخورد خوبی گرفت.</td>
+                    </tr>
+                    <!-- ردیف نمونه 3 -->
+                    <tr class="hover:bg-gray-50 transition duration-150">
+                        <td class="px-6 py-4 whitespace-pre-wrap">بنر حرفه‌ای لینکدین برای وبینار جدید. طراحی باید تمیز، شرکتی و شامل عکس سخنران باشد.</td>
+                        <td class="px-6 py-4">وبینار / رویداد</td>
+                        <td class="px-6 py-4">بنر لینکدین، رسمی، تمیز، عکس سخنران</td>
+                        <td class="px-6 py-4">غیررسمی، شوخ، تصاویر استوک</td>
+                        <td class="px-6 py-4">[نام سخنران]، [عنوان وبینار]، [تاریخ]</td>
+                        <td class="px-6 py-4"><a href="#" class="text-blue-600 hover:underline" target="_blank">[لینک نمونه]</a></td>
+                        <td class="px-6 py-4">عکس سخنران حتما با کیفیت باشد.</td>
+                    </tr>
+                    <!-- پرامپت‌های جدید در اینجا اضافه می‌شوند -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- مودال (پاپ‌آپ) برای افزودن پرامپت جدید -->
+    <!-- این بخش در ابتدا مخفی است -->
+    <div id="addModal" class="hidden fixed inset-0 bg-black bg-opacity-60 overflow-y-auto h-full w-full flex items-center justify-center z-50 p-4">
+        <div class="bg-white p-6 sm:p-8 rounded-lg shadow-xl w-full max-w-3xl max-h-full overflow-y-auto">
+            <div class="flex justify-between items-center border-b pb-3 mb-5">
+                <h2 class="text-2xl font-semibold">افزودن پرامپت جدید</h2>
+                <button id="closeModalButton" class="text-gray-500 hover:text-gray-800 text-3xl font-bold">&times;</button>
+            </div>
+            
+            <!-- فرم افزودن پرامپت -->
+            <form id="addPromptForm" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="promptText" class="block text-sm font-medium text-gray-700 mb-1">💡 متن پرامپت <span class="text-red-500">*</span></label>
+                        <textarea id="promptText" name="promptText" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+                    </div>
+                    <div>
+                        <label for="promptNotes" class="block text-sm font-medium text-gray-700 mb-1">✍️ یادداشت‌ها</label>
+                        <textarea id="promptNotes" name="promptNotes" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label for="promptOccasion" class="block text-sm font-medium text-gray-700 mb-1">🏷️ موضوع / مناسبت</label>
+                        <input type="text" id="promptOccasion" name="promptOccasion" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="promptKeywords" class="block text-sm font-medium text-gray-700 mb-1">🔑 کلمات کلیدی</label>
+                        <input type="text" id="promptKeywords" name="promptKeywords" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="promptNegative" class="block text-sm font-medium text-gray-700 mb-1">⛔ پرامپت منفی</label>
+                        <input type="text" id="promptNegative" name="promptNegative" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="promptVariables" class="block text-sm font-medium text-gray-700 mb-1">⚙️ متغیرها</label>
+                        <input type="text" id="promptVariables" name="promptVariables" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="promptLink" class="block text-sm font-medium text-gray-700 mb-1">🖼️ لینک نمونه بصری</label>
+                        <input type="url" id="promptLink" name="promptLink" placeholder="https://example.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ltr text-left">
+                    </div>
+                </div>
+
+                <!-- دکمه‌های فرم -->
+                <div class="flex justify-end pt-4 space-x-2 space-x-reverse">
+                    <button type="button" id="cancelButton" class="bg-gray-200 text-gray-800 px-5 py-2 rounded-lg font-medium hover:bg-gray-300 transition duration-300">
+                        انصراف
+                    </button>
+                    <button type="submit" class="bg-blue-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-blue-700 transition duration-300">
+                        ذخیره پرامپت
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- کدهای جاوا اسکریپت برای تعاملی کردن صفحه -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const addPromptButton = document.getElementById('addPromptButton');
+            const modal = document.getElementById('addModal');
+            const closeModalButton = document.getElementById('closeModalButton');
+            const cancelButton = document.getElementById('cancelButton');
+            const addPromptForm = document.getElementById('addPromptForm');
+            const tableBody = document.getElementById('promptTableBody');
+            const searchInput = document.getElementById('searchInput');
+
+            // --- مدیریت باز و بسته شدن مودال ---
+            const showModal = () => modal.classList.remove('hidden');
+            const hideModal = () => modal.classList.add('hidden');
+
+            addPromptButton.addEventListener('click', showModal);
+            closeModalButton.addEventListener('click', hideModal);
+            cancelButton.addEventListener('click', hideModal);
+            
+            // بستن مودال با کلیک روی پس‌زمینه
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    hideModal();
+                }
+            });
+
+            // --- مدیریت فرم افزودن پرامپت ---
+            addPromptForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                // گرفتن مقادیر از فرم
+                const promptText = document.getElementById('promptText').value;
+                const promptOccasion = document.getElementById('promptOccasion').value;
+                const promptKeywords = document.getElementById('promptKeywords').value;
+                const promptNegative = document.getElementById('promptNegative').value;
+                const promptVariables = document.getElementById('promptVariables').value;
+                const promptLink = document.getElementById('promptLink').value;
+                const promptNotes = document.getElementById('promptNotes').value;
+
+                // ایجاد ردیف جدید در جدول
+                const newRow = tableBody.insertRow(0); // اضافه کردن به ابتدای جدول
+                newRow.className = 'hover:bg-gray-50 transition duration-150';
+                
+                // تعیین کلاسرنگ ردیف به صورت یکی در میان
+                if (tableBody.rows.length % 2 === 0) {
+                     newRow.classList.add('bg-gray-50', 'hover:bg-gray-100');
+                } else {
+                     newRow.classList.add('bg-white', 'hover:bg-gray-50');
+                }
+
+                // ایجاد سلول‌ها
+                newRow.innerHTML = `
+                    <td class="px-6 py-4 whitespace-pre-wrap">${escapeHTML(promptText)}</td>
+                    <td class="px-6 py-4">${escapeHTML(promptOccasion)}</td>
+                    <td class="px-6 py-4">${escapeHTML(promptKeywords)}</td>
+                    <td class="px-6 py-4">${escapeHTML(promptNegative)}</td>
+                    <td class="px-6 py-4">${escapeHTML(promptVariables)}</td>
+                    <td class="px-6 py-4">${promptLink ? `<a href="${escapeHTML(promptLink)}" class="text-blue-600 hover:underline" target="_blank">[لینک نمونه]</a>` : ''}</td>
+                    <td class="px-6 py-4">${escapeHTML(promptNotes)}</td>
+                `;
+
+                // بستن مودال و ریست کردن فرم
+                hideModal();
+                addPromptForm.reset();
+                
+                // به‌روزرسانی فیلتر
+                filterTable();
+            });
+
+            // --- مدیریت جستجو (فیلتر) ---
+            const filterTable = () => {
+                const query = searchInput.value.toLowerCase();
+                const rows = tableBody.getElementsByTagName('tr');
+
+                for (const row of rows) {
+                    const rowText = row.textContent.toLowerCase();
+                    if (rowText.includes(query)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            };
+            
+            searchInput.addEventListener('input', filterTable);
+
+            // --- تابع کمکی برای جلوگیری از حملات XSS ---
+            function escapeHTML(str) {
+                return str.replace(/[&<>"']/g, function(m) {
+                    return {
+                        '&': '&amp;',
+                        '<': '&lt;',
+                        '>': '&gt;',
+                        '"': '&quot;',
+                        "'": '&#039;'
+                    }[m];
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>
