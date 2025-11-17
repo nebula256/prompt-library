@@ -161,13 +161,6 @@
     appId: "1:374041398410:web:8e0552f30229d8107cf173"
   };
 
-        // بررسی اینکه آیا تنظیمات فایربیس به درستی جایگذاری شده‌اند
-        if (firebaseConfig.apiKey === "AIzaSyCw3CvUnumkNgK2-uhZ1paUPetfBc-hOYs") {
-            console.error("خطا: تنظیمات فایربیس جایگذاری نشده است.");
-            document.getElementById('loadingRow').innerHTML = '<td colspan="8" class="px-6 py-10 text-center text-red-500 text-lg">خطا: تنظیمات فایربیس در کد جایگذاری نشده است. لطفاً فایل HTML را ویرایش کنید.</td>';
-            throw new Error("Firebase config is not set. Please edit the HTML file.");
-        }
-
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
