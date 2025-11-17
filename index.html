@@ -152,7 +152,7 @@
         // !!!!!!! توجه بسیار مهم !!!!!!!
         // شما باید آبجکت `firebaseConfig` را که از کنسول فایربیس کپی کردید،
         // در اینجا جایگزین کنید.
-         const firebaseConfig = {
+        const firebaseConfig = {
     apiKey: "AIzaSyCw3CvUnumkNgK2-uhZ1paUPetfBc-hOYs",
     authDomain: "my-prompt-library-35534.firebaseapp.com",
     projectId: "my-prompt-library-35534",
@@ -222,7 +222,7 @@
 
             // افزودن ایونت لیسنر برای دکمه حذف
             row.querySelector('.delete-btn').addEventListener('click', async (e) => {
-                const id = e.target.dataset.id;
+                const id = e.currentTarget.dataset.id; // <-- تغییر در این خط: e.target به e.currentTarget تبدیل شد
                 // در اینجا می‌توان یک مودال تایید زیبا نمایش داد
                 // اما برای سادگی، مستقیماً حذف می‌کنیم.
                 try {
