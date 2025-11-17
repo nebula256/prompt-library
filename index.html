@@ -25,6 +25,8 @@
 </head>
 <body class="bg-gray-100 text-gray-900">
 
+    <!-- ... (کد HTML هدر و بدنه بدون تغییر باقی می‌ماند) ... -->
+    
     <!-- هدر صفحه -->
     <header class="bg-white shadow-md">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -75,7 +77,6 @@
     </main>
 
     <!-- مودال (پاپ‌آپ) برای افزودن پرامپت جدید -->
-    <!-- ... (کد HTML مودال بدون تغییر باقی می‌ماند) ... -->
     <div id="addModal" class="hidden fixed inset-0 bg-black bg-opacity-60 overflow-y-auto h-full w-full flex items-center justify-center z-50 p-4">
         <div class="bg-white p-6 sm:p-8 rounded-lg shadow-xl w-full max-w-3xl max-h-full overflow-y-auto">
             <div class="flex justify-between items-center border-b pb-3 mb-5">
@@ -84,6 +85,7 @@
             </div>
             
             <form id="addPromptForm" class="space-y-4">
+                <!-- ... (کد HTML فرم مودال بدون تغییر باقی می‌ماند) ... -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label for="promptText" class="block text-sm font-medium text-gray-700 mb-1">💡 متن پرامپت <span class="text-red-500">*</span></label>
@@ -134,7 +136,7 @@
     <script type="module">
         // Import a specific version for compatibility
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { 
             getFirestore, 
             doc, 
@@ -147,15 +149,36 @@
 
         // --- 1. تنظیمات اولیه فایربیس ---
         
-        // این متغیرها توسط محیط میزبانی (مانند گیت‌هاب) فراهم می‌شوند
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        // !!!!!!! توجه بسیار مهم !!!!!!!
+        // شما باید آبجکت `firebaseConfig` را که از کنسول فایربیس کپی کردید،
+        // در اینجا جایگزین کنید.
+        const firebaseConfig = {
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
 
-        // بررسی اینکه آیا تنظیمات فایربیس به درستی بارگذاری شده‌اند
-        if (!firebaseConfig.apiKey) {
-            console.error("خطا: تنظیمات فایربیس بارگذاری نشد.");
-            document.getElementById('loadingRow').innerHTML = '<td colspan="8" class="px-6 py-10 text-center text-red-500 text-lg">خطا: تنظیمات فایربیس بارگذاری نشد. مطمئن شوید برنامه به درستی میزبانی شده است.</td>';
-            throw new Error("Firebase config is missing, stopping script."); // <--- تغییر در این خط
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyCw3CvUnumkNgK2-uhZ1paUPetfBc-hOYs",
+    authDomain: "my-prompt-library-35534.firebaseapp.com",
+    projectId: "my-prompt-library-35534",
+    storageBucket: "my-prompt-library-35534.firebasestorage.app",
+    messagingSenderId: "374041398410",
+    appId: "1:374041398410:web:8e0552f30229d8107cf173"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+</script>
+        };
+
+        // بررسی اینکه آیا تنظیمات فایربیس به درستی جایگذاری شده‌اند
+        if (firebaseConfig.apiKey === "YOUR_API_KEY_HERE") {
+            console.error("خطا: تنظیمات فایربیس جایگذاری نشده است.");
+            document.getElementById('loadingRow').innerHTML = '<td colspan="8" class="px-6 py-10 text-center text-red-500 text-lg">خطا: تنظیمات فایربیس در کد جایگذاری نشده است. لطفاً فایل HTML را ویرایش کنید.</td>';
+            throw new Error("Firebase config is not set. Please edit the HTML file.");
         }
 
         const app = initializeApp(firebaseConfig);
@@ -165,8 +188,8 @@
         // فعال کردن لاگ‌های دقیق برای دیباگ کردن
         setLogLevel('Debug');
 
-        // مسیر کالکشن در فایربیس (اشتراکی برای همه کاربران)
-        const promptsCollectionPath = `/artifacts/${appId}/public/data/prompts`;
+        // مسیر کالکشن در فایربیس (یک مسیر ساده)
+        const promptsCollectionPath = "prompts"; // <-- از یک کالکشن ساده استفاده می‌کنیم
         const promptsCollection = collection(db, promptsCollectionPath);
 
         let userId = null;
@@ -220,9 +243,8 @@
             // افزودن ایونت لیسنر برای دکمه حذف
             row.querySelector('.delete-btn').addEventListener('click', async (e) => {
                 const id = e.target.dataset.id;
-                // به دلیل محدودیت‌های امنیتی iframe، از confirm() استفاده نمی‌کنیم.
-                // در یک برنامه واقعی، در اینجا یک مودال تایید زیبا نمایش داده می‌شود.
-                // برای سادگی، ما مستقیماً حذف می‌کنیم.
+                // در اینجا می‌توان یک مودال تایید زیبا نمایش داد
+                // اما برای سادگی، مستقیماً حذف می‌کنیم.
                 try {
                     await deleteDoc(doc(db, promptsCollectionPath, id));
                     // ردیف به صورت خودکار توسط onSnapshot حذف می‌شود
@@ -244,7 +266,7 @@
                 variables: document.getElementById('promptVariables').value,
                 link: document.getElementById('promptLink').value,
                 notes: document.getElementById('promptNotes').value,
-                createdAt: new Date(), // اضافه کردن تاریخ برای مرتب‌سازی احتمالی در آینده
+                createdAt: new Date(), // اضافه کردن تاریخ برای مرتب‌سازی
                 ownerId: userId // ذخیره آیدی کاربر
             };
 
@@ -255,7 +277,6 @@
                 addPromptForm.reset();
             } catch (error) {
                 console.error("Error adding document: ", error);
-                // می‌توانید یک پیام خطا به کاربر نشان دهید
             }
         });
 
@@ -265,7 +286,6 @@
             const rows = tableBody.getElementsByTagName('tr');
 
             for (const row of rows) {
-                // ردیف لودینگ را نادیده بگیر
                 if (row.id === 'loadingRow' || row.id === 'emptyRow') continue; 
                 
                 const rowText = row.textContent.toLowerCase();
@@ -289,19 +309,14 @@
         // --- 7. تابع اصلی (اتصال و خواندن داده) ---
         async function main() {
             try {
-                // احراز هویت کاربر
-                if (typeof __initial_auth_token !== 'undefined') {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
+                // احراز هویت کاربر به صورت ناشناس
+                await signInAnonymously(auth);
                 
-                userId = auth.currentUser?.uid || crypto.randomUUID();
+                userId = auth.currentUser?.uid;
                 console.log("User authenticated with ID:", userId);
 
                 // گوش دادن به تغییرات دیتابیس (Real-time)
                 onSnapshot(promptsCollection, (querySnapshot) => {
-                    // پاک کردن جدول (به جز ردیف لودینگ)
                     tableBody.innerHTML = ''; 
                     
                     if (querySnapshot.empty) {
@@ -310,13 +325,10 @@
                     }
 
                     // مرتب‌سازی بر اساس تاریخ ایجاد (جدیدترین اول)
-                    // توجه: از orderBy() فایربیس استفاده نمی‌کنیم تا نیاز به ایندکس نباشد
                     const docs = querySnapshot.docs.sort((a, b) => b.data().createdAt.toMillis() - a.data().createdAt.toMillis());
 
-                    // رندر کردن هر ردیف
                     docs.forEach(renderPromptRow);
                     
-                    // فیلتر را مجددا اعمال کن (اگر چیزی در جستجو بود)
                     filterTable();
                 }, (error) => {
                     console.error("Error listening to collection: ", error);
@@ -325,12 +337,11 @@
 
             } catch (error) {
                 console.error("Error during auth or initialization: ", error);
-                tableBody.innerHTML = `<tr id="authErrorRow"><td colspan="8" class="px-6 py-10 text-center text-red-500 text-lg">خطا در احراز هویت.</td></tr>`;
+                tableBody.innerHTML = `<tr id="authErrorRow"><td colspan="8" class="px-6 py-10 text-center text-red-500 text-lg">خطا در احراز هویت. ${error.message}</td></tr>`;
             }
         }
 
         // --- 8. اجرای برنامه ---
-        // منتظر می‌مانیم تا DOM کامل بارگذاری شود
         document.addEventListener('DOMContentLoaded', main);
 
     </script>
