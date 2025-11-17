@@ -4,16 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>کتابخانه پرامپت</title>
-    <!-- استفاده از Tailwind CSS برای طراحی جذاب -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* استفاده از یک فونت پیش‌فرض مناسب فارسی که در اکثر سیستم‌ها وجود دارد */
-        body {
-            font-family: Tahoma, sans-serif;
+        body { font-family: Tahoma, sans-serif; }
+        .hidden { display: none; }
+        /* استایل ساده برای دکمه حذف */
+        .delete-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.25rem; /* 20px */
+            line-height: 1;
+            padding: 0.25rem;
+            color: #ef4444; /* red-500 */
         }
-        /* کلاس کمکی برای مخفی کردن */
-        .hidden {
-            display: none;
+        .delete-btn:hover {
+            color: #b91c1c; /* red-700 */
         }
     </style>
 </head>
@@ -40,7 +46,6 @@
         </div>
 
         <!-- بخش جدول پرامپت‌ها -->
-        <!-- این کانتینر برای اسکرول افقی جدول در موبایل ضروری است -->
         <div class="overflow-x-auto bg-white rounded-lg shadow">
             <table class="w-full min-w-max text-sm text-right text-gray-700">
                 <!-- هدر جدول -->
@@ -53,48 +58,24 @@
                         <th class="px-6 py-4">⚙️ متغیرها</th>
                         <th class="px-6 py-4">🖼️ نمونه بصری</th>
                         <th class="px-6 py-4">✍️ یادداشت‌ها</th>
+                        <th class="px-6 py-4">اقدامات</th>
                     </tr>
                 </thead>
                 <!-- بدنه جدول که پرامپت‌ها در آن قرار می‌گیرند -->
+                <!-- این بخش اکنون توسط فایربیس پر می‌شود -->
                 <tbody id="promptTableBody" class="divide-y divide-gray-200">
-                    <!-- ردیف نمونه 1 -->
-                    <tr class="hover:bg-gray-50 transition duration-150">
-                        <td class="px-6 py-4 whitespace-pre-wrap">استوری اینستاگرام مینیمال و شیک برای فروش فوق‌العاده. استفاده از رنگ‌های برند (سرمه‌ای، طلایی). نمایش تایمر شمارش معکوس.</td>
-                        <td class="px-6 py-4">فروش فوق‌العاده</td>
-                        <td class="px-6 py-4">استوری، مینیمال، تایمر، طلایی</td>
-                        <td class="px-6 py-4">شلوغ، رنگارنگ، فونت‌های فانتزی</td>
-                        <td class="px-6 py-4">[درصد تخفیف]، [زمان باقی‌مانده]</td>
-                        <td class="px-6 py-4"><a href="#" class="text-blue-600 hover:underline" target="_blank">[لینک نمونه]</a></td>
-                        <td class="px-6 py-4">برای کمپین‌های ۲۴ ساعته عالی جواب داد.</td>
+                    <tr id="loadingRow">
+                        <td colspan="8" class="px-6 py-10 text-center text-gray-500 text-lg">
+                             در حال بارگذاری داده‌ها از فایربیس...
+                        </td>
                     </tr>
-                    <!-- ردیف نمونه 2 -->
-                    <tr class="bg-gray-50 hover:bg-gray-100 transition duration-150">
-                        <td class="px-6 py-4 whitespace-pre-wrap">پوستر شاد و پرانرژی برای جشن نوروز. شامل المان‌های سنتی نوروز (سبزه، ماهی) در سبک طراحی مدرن و فلت.</td>
-                        <td class="px-6 py-4">جشن نوروز</td>
-                        <td class="px-6 py-4">پوستر، نوروز، مدرن، شاد، سبزه</td>
-                        <td class="px-6 py-4">تیره، غمگین، بیش از حد سنتی</td>
-                        <td class="px-6 py-4">[محل برگزاری]، [لوگو شرکت]</td>
-                        <td class="px-6 py-4"><a href="#" class="text-blue-600 hover:underline" target="_blank">[لینک نمونه]</a></td>
-                        <td class="px-6 py-4">سبک فلت بازخورد خوبی گرفت.</td>
-                    </tr>
-                    <!-- ردیف نمونه 3 -->
-                    <tr class="hover:bg-gray-50 transition duration-150">
-                        <td class="px-6 py-4 whitespace-pre-wrap">بنر حرفه‌ای لینکدین برای وبینار جدید. طراحی باید تمیز، شرکتی و شامل عکس سخنران باشد.</td>
-                        <td class="px-6 py-4">وبینار / رویداد</td>
-                        <td class="px-6 py-4">بنر لینکدین، رسمی، تمیز، عکس سخنران</td>
-                        <td class="px-6 py-4">غیررسمی، شوخ، تصاویر استوک</td>
-                        <td class="px-6 py-4">[نام سخنران]، [عنوان وبینار]، [تاریخ]</td>
-                        <td class="px-6 py-4"><a href="#" class="text-blue-600 hover:underline" target="_blank">[لینک نمونه]</a></td>
-                        <td class="px-6 py-4">عکس سخنران حتما با کیفیت باشد.</td>
-                    </tr>
-                    <!-- پرامپت‌های جدید در اینجا اضافه می‌شوند -->
                 </tbody>
             </table>
         </div>
     </main>
 
     <!-- مودال (پاپ‌آپ) برای افزودن پرامپت جدید -->
-    <!-- این بخش در ابتدا مخفی است -->
+    <!-- ... (کد HTML مودال بدون تغییر باقی می‌ماند) ... -->
     <div id="addModal" class="hidden fixed inset-0 bg-black bg-opacity-60 overflow-y-auto h-full w-full flex items-center justify-center z-50 p-4">
         <div class="bg-white p-6 sm:p-8 rounded-lg shadow-xl w-full max-w-3xl max-h-full overflow-y-auto">
             <div class="flex justify-between items-center border-b pb-3 mb-5">
@@ -102,7 +83,6 @@
                 <button id="closeModalButton" class="text-gray-500 hover:text-gray-800 text-3xl font-bold">&times;</button>
             </div>
             
-            <!-- فرم افزودن پرامپت -->
             <form id="addPromptForm" class="space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -114,7 +94,6 @@
                         <textarea id="promptNotes" name="promptNotes" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
                     </div>
                 </div>
-
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                         <label for="promptOccasion" class="block text-sm font-medium text-gray-700 mb-1">🏷️ موضوع / مناسبت</label>
@@ -129,7 +108,6 @@
                         <input type="text" id="promptNegative" name="promptNegative" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                 </div>
-
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label for="promptVariables" class="block text-sm font-medium text-gray-700 mb-1">⚙️ متغیرها</label>
@@ -140,8 +118,6 @@
                         <input type="url" id="promptLink" name="promptLink" placeholder="https://example.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ltr text-left">
                     </div>
                 </div>
-
-                <!-- دکمه‌های فرم -->
                 <div class="flex justify-end pt-4 space-x-2 space-x-reverse">
                     <button type="button" id="cancelButton" class="bg-gray-200 text-gray-800 px-5 py-2 rounded-lg font-medium hover:bg-gray-300 transition duration-300">
                         انصراف
@@ -154,105 +130,209 @@
         </div>
     </div>
     
-    <!-- کدهای جاوا اسکریپت برای تعاملی کردن صفحه -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const addPromptButton = document.getElementById('addPromptButton');
-            const modal = document.getElementById('addModal');
-            const closeModalButton = document.getElementById('closeModalButton');
-            const cancelButton = document.getElementById('cancelButton');
-            const addPromptForm = document.getElementById('addPromptForm');
-            const tableBody = document.getElementById('promptTableBody');
-            const searchInput = document.getElementById('searchInput');
+    <!-- کتابخانه‌های فایربیس -->
+    <script type="module">
+        // Import a specific version for compatibility
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { 
+            getFirestore, 
+            doc, 
+            addDoc, 
+            deleteDoc, 
+            collection, 
+            onSnapshot,
+            setLogLevel
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-            // --- مدیریت باز و بسته شدن مودال ---
-            const showModal = () => modal.classList.remove('hidden');
-            const hideModal = () => modal.classList.add('hidden');
+        // --- 1. تنظیمات اولیه فایربیس ---
+        
+        // این متغیرها توسط محیط میزبانی (مانند گیت‌هاب) فراهم می‌شوند
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
 
-            addPromptButton.addEventListener('click', showModal);
-            closeModalButton.addEventListener('click', hideModal);
-            cancelButton.addEventListener('click', hideModal);
-            
-            // بستن مودال با کلیک روی پس‌زمینه
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    hideModal();
+        // بررسی اینکه آیا تنظیمات فایربیس به درستی بارگذاری شده‌اند
+        if (!firebaseConfig.apiKey) {
+            console.error("خطا: تنظیمات فایربیس بارگذاری نشد.");
+            document.getElementById('loadingRow').innerHTML = '<td colspan="8" class="px-6 py-10 text-center text-red-500 text-lg">خطا: تنظیمات فایربیس بارگذاری نشد. مطمئن شوید برنامه به درستی میزبانی شده است.</td>';
+            return;
+        }
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        
+        // فعال کردن لاگ‌های دقیق برای دیباگ کردن
+        setLogLevel('Debug');
+
+        // مسیر کالکشن در فایربیس (اشتراکی برای همه کاربران)
+        const promptsCollectionPath = `/artifacts/${appId}/public/data/prompts`;
+        const promptsCollection = collection(db, promptsCollectionPath);
+
+        let userId = null;
+
+        // --- 2. مدیریت UI (عناصر DOM) ---
+        const addPromptButton = document.getElementById('addPromptButton');
+        const modal = document.getElementById('addModal');
+        const closeModalButton = document.getElementById('closeModalButton');
+        const cancelButton = document.getElementById('cancelButton');
+        const addPromptForm = document.getElementById('addPromptForm');
+        const tableBody = document.getElementById('promptTableBody');
+        const searchInput = document.getElementById('searchInput');
+
+        const showModal = () => modal.classList.remove('hidden');
+        const hideModal = () => modal.classList.add('hidden');
+
+        addPromptButton.addEventListener('click', showModal);
+        closeModalButton.addEventListener('click', hideModal);
+        cancelButton.addEventListener('click', hideModal);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) hideModal();
+        });
+
+        // --- 3. تابع کمکی برای رندر کردن ردیف جدول ---
+        function renderPromptRow(doc) {
+            const data = doc.data();
+            const row = tableBody.insertRow(-1); // اضافه کردن به انتهای جدول
+            row.id = doc.id; // آیدی داکیومنت را به عنوان آیدی ردیف قرار می‌دهیم
+            row.className = 'hover:bg-gray-50 transition duration-150';
+
+            // رنگ‌بندی یکی در میان
+            if (tableBody.rows.length % 2 === 0) {
+                 row.classList.add('bg-gray-50', 'hover:bg-gray-100');
+            } else {
+                 row.classList.add('bg-white', 'hover:bg-gray-50');
+            }
+
+            row.innerHTML = `
+                <td class="px-6 py-4 whitespace-pre-wrap">${escapeHTML(data.text)}</td>
+                <td class="px-6 py-4">${escapeHTML(data.occasion)}</td>
+                <td class="px-6 py-4">${escapeHTML(data.keywords)}</td>
+                <td class="px-6 py-4">${escapeHTML(data.negative)}</td>
+                <td class="px-6 py-4">${escapeHTML(data.variables)}</td>
+                <td class="px-6 py-4">${data.link ? `<a href="${escapeHTML(data.link)}" class="text-blue-600 hover:underline" target="_blank">[لینک نمونه]</a>` : ''}</td>
+                <td class="px-6 py-4">${escapeHTML(data.notes)}</td>
+                <td class="px-6 py-4 text-center">
+                    <button class="delete-btn" data-id="${doc.id}" title="حذف پرامپت">🗑️</button>
+                </td>
+            `;
+
+            // افزودن ایونت لیسنر برای دکمه حذف
+            row.querySelector('.delete-btn').addEventListener('click', async (e) => {
+                const id = e.target.dataset.id;
+                // به دلیل محدودیت‌های امنیتی iframe، از confirm() استفاده نمی‌کنیم.
+                // در یک برنامه واقعی، در اینجا یک مودال تایید زیبا نمایش داده می‌شود.
+                // برای سادگی، ما مستقیماً حذف می‌کنیم.
+                try {
+                    await deleteDoc(doc(db, promptsCollectionPath, id));
+                    // ردیف به صورت خودکار توسط onSnapshot حذف می‌شود
+                } catch (error) {
+                    console.error("Error deleting document: ", error);
                 }
             });
+        }
 
-            // --- مدیریت فرم افزودن پرامپت ---
-            addPromptForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                
-                // گرفتن مقادیر از فرم
-                const promptText = document.getElementById('promptText').value;
-                const promptOccasion = document.getElementById('promptOccasion').value;
-                const promptKeywords = document.getElementById('promptKeywords').value;
-                const promptNegative = document.getElementById('promptNegative').value;
-                const promptVariables = document.getElementById('promptVariables').value;
-                const promptLink = document.getElementById('promptLink').value;
-                const promptNotes = document.getElementById('promptNotes').value;
+        // --- 4. مدیریت فرم (افزودن داده به فایربیس) ---
+        addPromptForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                text: document.getElementById('promptText').value,
+                occasion: document.getElementById('promptOccasion').value,
+                keywords: document.getElementById('promptKeywords').value,
+                negative: document.getElementById('promptNegative').value,
+                variables: document.getElementById('promptVariables').value,
+                link: document.getElementById('promptLink').value,
+                notes: document.getElementById('promptNotes').value,
+                createdAt: new Date(), // اضافه کردن تاریخ برای مرتب‌سازی احتمالی در آینده
+                ownerId: userId // ذخیره آیدی کاربر
+            };
 
-                // ایجاد ردیف جدید در جدول
-                const newRow = tableBody.insertRow(0); // اضافه کردن به ابتدای جدول
-                newRow.className = 'hover:bg-gray-50 transition duration-150';
-                
-                // تعیین کلاسرنگ ردیف به صورت یکی در میان
-                if (tableBody.rows.length % 2 === 0) {
-                     newRow.classList.add('bg-gray-50', 'hover:bg-gray-100');
-                } else {
-                     newRow.classList.add('bg-white', 'hover:bg-gray-50');
-                }
-
-                // ایجاد سلول‌ها
-                newRow.innerHTML = `
-                    <td class="px-6 py-4 whitespace-pre-wrap">${escapeHTML(promptText)}</td>
-                    <td class="px-6 py-4">${escapeHTML(promptOccasion)}</td>
-                    <td class="px-6 py-4">${escapeHTML(promptKeywords)}</td>
-                    <td class="px-6 py-4">${escapeHTML(promptNegative)}</td>
-                    <td class="px-6 py-4">${escapeHTML(promptVariables)}</td>
-                    <td class="px-6 py-4">${promptLink ? `<a href="${escapeHTML(promptLink)}" class="text-blue-600 hover:underline" target="_blank">[لینک نمونه]</a>` : ''}</td>
-                    <td class="px-6 py-4">${escapeHTML(promptNotes)}</td>
-                `;
-
-                // بستن مودال و ریست کردن فرم
+            try {
+                await addDoc(promptsCollection, formData);
+                // ردیف به صورت خودکار توسط onSnapshot اضافه می‌شود
                 hideModal();
                 addPromptForm.reset();
-                
-                // به‌روزرسانی فیلتر
-                filterTable();
-            });
-
-            // --- مدیریت جستجو (فیلتر) ---
-            const filterTable = () => {
-                const query = searchInput.value.toLowerCase();
-                const rows = tableBody.getElementsByTagName('tr');
-
-                for (const row of rows) {
-                    const rowText = row.textContent.toLowerCase();
-                    if (rowText.includes(query)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                }
-            };
-            
-            searchInput.addEventListener('input', filterTable);
-
-            // --- تابع کمکی برای جلوگیری از حملات XSS ---
-            function escapeHTML(str) {
-                return str.replace(/[&<>"']/g, function(m) {
-                    return {
-                        '&': '&amp;',
-                        '<': '&lt;',
-                        '>': '&gt;',
-                        '"': '&quot;',
-                        "'": '&#039;'
-                    }[m];
-                });
+            } catch (error) {
+                console.error("Error adding document: ", error);
+                // می‌توانید یک پیام خطا به کاربر نشان دهید
             }
         });
+
+        // --- 5. مدیریت جستجو (فیلتر) ---
+        const filterTable = () => {
+            const query = searchInput.value.toLowerCase();
+            const rows = tableBody.getElementsByTagName('tr');
+
+            for (const row of rows) {
+                // ردیف لودینگ را نادیده بگیر
+                if (row.id === 'loadingRow' || row.id === 'emptyRow') continue; 
+                
+                const rowText = row.textContent.toLowerCase();
+                if (rowText.includes(query)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        };
+        searchInput.addEventListener('input', filterTable);
+
+        // --- 6. تابع کمکی (Escape) ---
+        function escapeHTML(str) {
+            if (!str) return '';
+            return str.replace(/[&<>"']/g, function(m) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+            });
+        }
+
+        // --- 7. تابع اصلی (اتصال و خواندن داده) ---
+        async function main() {
+            try {
+                // احراز هویت کاربر
+                if (typeof __initial_auth_token !== 'undefined') {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                
+                userId = auth.currentUser?.uid || crypto.randomUUID();
+                console.log("User authenticated with ID:", userId);
+
+                // گوش دادن به تغییرات دیتابیس (Real-time)
+                onSnapshot(promptsCollection, (querySnapshot) => {
+                    // پاک کردن جدول (به جز ردیف لودینگ)
+                    tableBody.innerHTML = ''; 
+                    
+                    if (querySnapshot.empty) {
+                        tableBody.innerHTML = `<tr id="emptyRow"><td colspan="8" class="px-6 py-10 text-center text-gray-500 text-lg">هنوز هیچ پرامپتی اضافه نشده است. اولین نفر باشید!</td></tr>`;
+                        return;
+                    }
+
+                    // مرتب‌سازی بر اساس تاریخ ایجاد (جدیدترین اول)
+                    // توجه: از orderBy() فایربیس استفاده نمی‌کنیم تا نیاز به ایندکس نباشد
+                    const docs = querySnapshot.docs.sort((a, b) => b.data().createdAt.toMillis() - a.data().createdAt.toMillis());
+
+                    // رندر کردن هر ردیف
+                    docs.forEach(renderPromptRow);
+                    
+                    // فیلتر را مجددا اعمال کن (اگر چیزی در جستجو بود)
+                    filterTable();
+                }, (error) => {
+                    console.error("Error listening to collection: ", error);
+                    tableBody.innerHTML = `<tr id="errorRow"><td colspan="8" class="px-6 py-10 text-center text-red-500 text-lg">خطا در بارگذاری داده‌ها. لطفاً صفحه را رفرش کنید.</td></tr>`;
+                });
+
+            } catch (error) {
+                console.error("Error during auth or initialization: ", error);
+                tableBody.innerHTML = `<tr id="authErrorRow"><td colspan="8" class="px-6 py-10 text-center text-red-500 text-lg">خطا در احراز هویت.</td></tr>`;
+            }
+        }
+
+        // --- 8. اجرای برنامه ---
+        // منتظر می‌مانیم تا DOM کامل بارگذاری شود
+        document.addEventListener('DOMContentLoaded', main);
+
     </script>
 
 </body>
