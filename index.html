@@ -194,10 +194,10 @@
         });
 
         // --- 3. تابع کمکی برای رندر کردن ردیف جدول ---
-        function renderPromptRow(doc) {
-            const data = doc.data();
+        function renderPromptRow(docSnapshot) { // <--- تغییر نام پارامتر از doc به docSnapshot
+            const data = docSnapshot.data(); // <--- استفاده از نام جدید
             const row = tableBody.insertRow(-1); // اضافه کردن به انتهای جدول
-            row.id = doc.id; // آیدی داکیومنت را به عنوان آیدی ردیف قرار می‌دهیم
+            row.id = docSnapshot.id; // <--- استفاده از نام جدید
             row.className = 'hover:bg-gray-50 transition duration-150';
 
             // رنگ‌بندی یکی در میان
@@ -216,7 +216,7 @@
                 <td class="px-6 py-4">${data.link ? `<a href="${escapeHTML(data.link)}" class="text-blue-600 hover:underline" target="_blank">[لینک نمونه]</a>` : ''}</td>
                 <td class="px-6 py-4">${escapeHTML(data.notes)}</td>
                 <td class="px-6 py-4 text-center">
-                    <button class="delete-btn" data-id="${doc.id}" title="حذف پرامپت">🗑️</button>
+                    <button class="delete-btn" data-id="${docSnapshot.id}" title="حذف پرامپت">🗑️</button> <!-- <--- استفاده از نام جدید -->
                 </td>
             `;
 
@@ -226,7 +226,7 @@
                 // در اینجا می‌توان یک مودال تایید زیبا نمایش داد
                 // اما برای سادگی، مستقیماً حذف می‌کنیم.
                 try {
-                    await deleteDoc(doc(db, promptsCollectionPath, id));
+                    await deleteDoc(doc(db, promptsCollectionPath, id)); // <--- حالا doc در اینجا به درستی به تابع فایربیس اشاره می‌کند
                     // ردیف به صورت خودکار توسط onSnapshot حذف می‌شود
                 } catch (error) {
                     console.error("Error deleting document: ", error);
