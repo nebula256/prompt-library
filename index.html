@@ -155,7 +155,7 @@
         if (!firebaseConfig.apiKey) {
             console.error("خطا: تنظیمات فایربیس بارگذاری نشد.");
             document.getElementById('loadingRow').innerHTML = '<td colspan="8" class="px-6 py-10 text-center text-red-500 text-lg">خطا: تنظیمات فایربیس بارگذاری نشد. مطمئن شوید برنامه به درستی میزبانی شده است.</td>';
-            return;
+            throw new Error("Firebase config is missing, stopping script."); // <--- تغییر در این خط
         }
 
         const app = initializeApp(firebaseConfig);
